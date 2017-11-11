@@ -4,7 +4,7 @@
 #### 下载安装
 ------------
 ```shell
-wget -N --no-check-certificate https://raw.githubusercontent.com/FanhuaCloud/Shadowsocksrrmu/master/ssrmu.sh && chmod +x ssr.sh && bash ssr.sh
+wget -N --no-check-certificate https://raw.githubusercontent.com/FanhuaCloud/Shadowsocksrrmu/master/ssrmu.sh && chmod +x ssrmu.sh && bash ssrmu.sh
 ```
 #### 魔改内容
 ------------
