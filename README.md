@@ -36,6 +36,6 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/FanhuaCloud/Sha
 
 ------------
 
-版权归**ToyoDAdoubi**所有，原项目地址：https://github.com/bluekk935/ToyoDAdoubi
+版权归**ToyoDAdoubi**所有，原项目地址：https://github.com/ToyoDAdoubi/doubi
 如有版权问题可以联系我，我将立刻删除该脚本
 
