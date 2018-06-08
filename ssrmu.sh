@@ -487,6 +487,9 @@ Set_config_protocol(){
  ${Red_font_prefix}8.${Font_color_suffix} auth_chain_d
  ${Red_font_prefix}9.${Font_color_suffix} auth_chain_e
  ${Red_font_prefix}10.${Font_color_suffix} auth_chain_f
+ 
+ ${Green_font_prefix}11.${Font_color_suffix} auth_akarin_rand
+ ${Green_font_prefix}12.${Font_color_suffix} auth_akarin_spec_a
  ${Tip} 如果使用 auth_chain_* 系列协议，建议加密方式选择 none (该系列协议自带 RC4 加密)，混淆随意" && echo
 	stty erase '^H' && read -p "(默认: 3. auth_aes128_md5):" ssr_protocol
 	[[ -z "${ssr_protocol}" ]] && ssr_protocol="3"
@@ -510,6 +513,10 @@ Set_config_protocol(){
 		ssr_protocol="auth_chain_e"
 	elif [[ ${ssr_protocol} == "10" ]]; then
 		ssr_protocol="auth_chain_f"
+	elif [[ ${ssr_protocol} == "11" ]]; then
+		ssr_protocol="auth_akarin_rand"
+	elif [[ ${ssr_protocol} == "12" ]]; then
+		ssr_protocol="auth_akarin_spec_a"
 	else
 		ssr_protocol="auth_aes128_md5"
 	fi
