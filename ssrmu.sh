@@ -77,7 +77,46 @@ BBR_installation_status(){
 			chmod +x bbr.sh
 		fi
 	fi
-}+
+}
+# # 设置 防火墙规则
+# Add_iptables(){
+	# if [[ ! -z "${ssr_port}" ]]; then
+		# iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${ssr_port} -j ACCEPT
+		# iptables -I INPUT -m state --state NEW -m udp -p udp --dport ${ssr_port} -j ACCEPT
+		# ip6tables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${ssr_port} -j ACCEPT
+		# ip6tables -I INPUT -m state --state NEW -m udp -p udp --dport ${ssr_port} -j ACCEPT
+	# fi
+# }
+# Del_iptables(){
+	# if [[ ! -z "${port}" ]]; then
+		# iptables -D INPUT -m state --state NEW -m tcp -p tcp --dport ${port} -j ACCEPT
+		# iptables -D INPUT -m state --state NEW -m udp -p udp --dport ${port} -j ACCEPT
+		# ip6tables -D INPUT -m state --state NEW -m tcp -p tcp --dport ${port} -j ACCEPT
+		# ip6tables -D INPUT -m state --state NEW -m udp -p udp --dport ${port} -j ACCEPT
+	# fi
+# }
+# Save_iptables(){
+	# if [[ ${release} == "centos" ]]; then
+		# service iptables save
+		# service ip6tables save
+	# else
+		# iptables-save > /etc/iptables.up.rules
+		# ip6tables-save > /etc/ip6tables.up.rules
+	# fi
+# }
+# Set_iptables(){
+	# if [[ ${release} == "centos" ]]; then
+		# service iptables save
+		# service ip6tables save
+		# chkconfig --level 2345 iptables on
+		# chkconfig --level 2345 ip6tables on
+	# else
+		# iptables-save > /etc/iptables.up.rules
+		# ip6tables-save > /etc/ip6tables.up.rules
+		# echo -e '#!/bin/bash\n/sbin/iptables-restore < /etc/iptables.up.rules\n/sbin/ip6tables-restore < /etc/ip6tables.up.rules' > /etc/network/if-pre-up.d/iptables
+		# chmod +x /etc/network/if-pre-up.d/iptables
+	# fi
+# }
 # 读取 配置信息
 Get_IP(){
 	ip=$(wget -qO- -t1 -T2 ipinfo.io/ip)
@@ -387,7 +426,7 @@ Set_config_method(){
  ${Green_font_prefix}14.${Font_color_suffix} salsa20
  ${Green_font_prefix}15.${Font_color_suffix} chacha20
  ${Green_font_prefix}16.${Font_color_suffix} chacha20-ietf
- 
+
  ${Red_font_prefix}17.${Font_color_suffix} xsalsa20
  ${Red_font_prefix}18.${Font_color_suffix} xchacha20
  ${Tip} salsa20/chacha20-*系列加密方式，需要额外安装依赖 libsodium ，否则会无法启动ShadowsocksR !" && echo
@@ -451,7 +490,6 @@ Set_config_protocol(){
  
  ${Green_font_prefix}11.${Font_color_suffix} auth_akarin_rand
  ${Green_font_prefix}12.${Font_color_suffix} auth_akarin_spec_a
-
  ${Tip} 如果使用 auth_chain_* 系列协议，建议加密方式选择 none (该系列协议自带 RC4 加密)，混淆随意" && echo
 	read -e -p "(默认: 3. auth_aes128_md5):" ssr_protocol
 	[[ -z "${ssr_protocol}" ]] && ssr_protocol="3"
@@ -821,7 +859,7 @@ Check_python(){
 }
 Centos_yum(){
 	yum -y update
-	cat /etc/redhat-release | grep 7\..*| grep -i centos > /dev/null
+	cat /etc/redhat-release |grep 7\..*|grep -i centos>/dev/null
 	if [[ $? = 0 ]]; then
 		yum install -y vim unzip crond net-tools
 	else
@@ -840,8 +878,9 @@ Debian_apt(){
 # 下载 ShadowsocksR
 Download_SSR(){
 	cd "/usr/local"
-	#wget -N --no-check-certificate "https://github.com/ToyoDAdoubi/shadowsocksr/archive/manyuser.zip"
+	# wget -N --no-check-certificate "https://github.com/ToyoDAdoubi/shadowsocksr/archive/manyuser.zip"
 	#git config --global http.sslVerify false
+	#env GIT_SSL_NO_VERIFY=true git clone -b manyuser https://github.com/ToyoDAdoubi/shadowsocksr.git
 	git clone -b akkariiin/dev https://github.com/shadowsocksrr/shadowsocksr.git
 	[[ ! -e ${ssr_folder} ]] && echo -e "${Error} ShadowsocksR服务端 下载失败 !" && exit 1
 	# [[ ! -e "manyuser.zip" ]] && echo -e "${Error} ShadowsocksR服务端 压缩包 下载失败 !" && rm -rf manyuser.zip && exit 1
@@ -908,7 +947,7 @@ Installation_dependency(){
 	Check_python
 	#echo "nameserver 8.8.8.8" > /etc/resolv.conf
 	#echo "nameserver 8.8.4.4" >> /etc/resolv.conf
-	cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	if [[ ${release} == "centos" ]]; then
 		/etc/init.d/crond restart
 	else
@@ -1620,9 +1659,13 @@ Other_functions(){
   ${Green_font_prefix}3.${Font_color_suffix} 配置 LotServer(锐速母公司)
   ${Tip} 锐速/LotServer/BBR 不支持 OpenVZ！
   ${Tip} 锐速和LotServer不能共存！
-  ${Green_font_prefix}4.${Font_color_suffix} 切换 ShadowsocksR日志输出模式
+————————————
+  ${Green_font_prefix}4.${Font_color_suffix} 一键封禁 BT/PT/SPAM (iptables)
+  ${Green_font_prefix}5.${Font_color_suffix} 一键解封 BT/PT/SPAM (iptables)
+————————————
+  ${Green_font_prefix}6.${Font_color_suffix} 切换 ShadowsocksR日志输出模式
   —— 说明：SSR默认只输出错误日志，此项可切换为输出详细的访问日志。
-  ${Green_font_prefix}5.${Font_color_suffix} 监控 ShadowsocksR服务端运行状态
+  ${Green_font_prefix}7.${Font_color_suffix} 监控 ShadowsocksR服务端运行状态
   —— 说明：该功能适合于SSR服务端经常进程结束，启动该功能后会每分钟检测一次，当进程不存在则自动启动SSR服务端。" && echo
 	read -e -p "(默认: 取消):" other_num
 	[[ -z "${other_num}" ]] && echo "已取消..." && exit 1
@@ -1633,8 +1676,12 @@ Other_functions(){
 	elif [[ ${other_num} == "3" ]]; then
 		Configure_LotServer
 	elif [[ ${other_num} == "4" ]]; then
-		Set_config_connect_verbose_info
+		BanBTPTSPAM
 	elif [[ ${other_num} == "5" ]]; then
+		UnBanBTPTSPAM
+	elif [[ ${other_num} == "6" ]]; then
+		Set_config_connect_verbose_info
+	elif [[ ${other_num} == "7" ]]; then
 		Set_crontab_monitor_ssr
 	else
 		echo -e "${Error} 请输入正确的数字 [1-7]" && exit 1
@@ -1748,7 +1795,7 @@ crontab_monitor_ssr_cron_stop(){
 	fi
 }
 Update_Shell(){
-	# sh_new_ver=$(wget --no-check-certificate -qO- -t1 -T3 "https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssrmu.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1) && sh_new_type="github"
+	# sh_new_ver=$(wget -qO- -t1 -T3 "https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssrmu.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1) && sh_new_type="github"
 	# [[ -z ${sh_new_ver} ]] && echo -e "${Error} 无法链接到 Github !" && exit 0
 	# if [[ -e "/etc/init.d/ssrmu" ]]; then
 		# rm -rf /etc/init.d/ssrmu
