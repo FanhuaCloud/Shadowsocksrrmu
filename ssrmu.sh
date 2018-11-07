@@ -861,18 +861,18 @@ Centos_yum(){
 	yum -y update
 	cat /etc/redhat-release |grep 7\..*|grep -i centos>/dev/null
 	if [[ $? = 0 ]]; then
-		yum install -y vim unzip crond net-tools
+		yum install -y vim unzip crond net-tools git
 	else
-		yum install -y vim unzip crond
+		yum install -y vim unzip crond git
 	fi
 }
 Debian_apt(){
 	apt-get update
 	cat /etc/issue |grep 9\..*>/dev/null
 	if [[ $? = 0 ]]; then
-		apt-get install -y vim unzip cron net-tools
+		apt-get install -y vim unzip cron net-tools git
 	else
-		apt-get install -y vim unzip cron
+		apt-get install -y vim unzip cron git
 	fi
 }
 # 下载 ShadowsocksR
@@ -1049,7 +1049,6 @@ Install_Libsodium(){
 		tar -xzf libsodium-${Libsodiumr_ver}.tar.gz && cd libsodium-${Libsodiumr_ver}
 		echo -e "${Info} 编译安装..."
 		./configure --disable-maintainer-mode && make -j2 && make install
-		echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
 	else
 		apt-get update
 		echo -e "${Info} 安装依赖..."
@@ -1061,7 +1060,6 @@ Install_Libsodium(){
 		echo -e "${Info} 编译安装..."
 		./configure --disable-maintainer-mode && make -j2 && make install
 	fi
-	ldconfig
 	cd .. && rm -rf libsodium-${Libsodiumr_ver}.tar.gz && rm -rf libsodium-${Libsodiumr_ver}
 	[[ ! -e ${Libsodiumr_file} ]] && echo -e "${Error} libsodium 安装失败 !" && exit 1
 	echo && echo -e "${Info} libsodium 安装成功 !" && echo
