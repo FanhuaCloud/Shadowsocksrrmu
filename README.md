@@ -13,6 +13,7 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/FanhuaCloud/Sha
 - 新增xsalsa20,xchacha20加密，详询https://github.com/shadowsocksrr/shadowsocksr-csharp/releases
 - 去掉原版脚本更新检测
 - 已更新：支持更新服务端
+- 新版更新：不再修改iptables，请手动配置
 
 #### 官方说明
 ------------
