@@ -15,6 +15,11 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/FanhuaCloud/Sha
 - 已更新：支持更新服务端
 - 新版更新：不再修改iptables，请手动配置
 
+#### 推荐服务器
+------------
+- 打个广告，搬瓦工双11特别款，仅售$29.88一年，拿来做梯子速度不错：
+https://blog.craftyun.cn/post/171.html
+
 #### 官方说明
 ------------
 - 脚本说明: ShadowsocksR 一键安装/管理脚本，支持单端口/多端口切换和管理
